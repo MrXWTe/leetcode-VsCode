@@ -37,7 +37,42 @@
  */
 class Solution {
     public ListNode sortList(ListNode head) {
-        
+        if(head == null || head.next == null) 
+            return head;
+            
+        ListNode fast = head.next;
+        ListNode slow = head;
+
+        // 找到链表中点
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        fast = slow.next;
+        slow.next = null;
+        head = sortList(head);
+        fast = sortList(fast);
+        return merge(head, fast);
+
+    }
+
+    public ListNode merge(ListNode l1, ListNode l2){
+        ListNode cur = new ListNode(0);
+        ListNode pre = cur;
+        while(l1 != null && l2 != null){
+            if(l1.val > l2.val){
+                cur.next = l2;
+                l2 = l2.next;
+            }else{
+                cur.next = l1;
+                l1 = l1.next;
+            }
+            cur = cur.next;
+        }
+
+        cur.next = l1==null?l2:l1;
+        return pre.next;
     }
 }
 
