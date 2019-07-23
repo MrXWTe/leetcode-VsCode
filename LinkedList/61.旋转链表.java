@@ -1,3 +1,4 @@
+package LinkedList;
 /*
  * @lc app=leetcode.cn id=61 lang=java
  *
