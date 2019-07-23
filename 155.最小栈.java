@@ -1,3 +1,7 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Stack;
+
 /*
  * @lc app=leetcode.cn id=155 lang=java
  *
@@ -5,34 +9,85 @@
  */
 class MinStack {
 
-    private Stack<Integer> stack1 = null;
-    private Stack<Integer> stack2 = null;
-    int min;
+    Deque<Element> stack;
+    int min = Integer.MAX_VALUE;
+
     /** initialize your data structure here. */
     public MinStack() {
-        stack1 = new Stack<>();
-        stack2 = new Stack<>();
-        min = Integer.MAX_VALUE;
+        stack = new ArrayDeque<>();
     }
     
     public void push(int x) {
-        stack1.push(x);
         min = Math.min(min, x);
-        stack2.push(min);
+        Element e = new Element(x, min);
+        stack.push(e);
     }
     
     public void pop() {
-        stack1.pop();
-        stack2.pop();
-        min = stack2.peek();
+        stack.pop();
+        if(stack.isEmpty()){
+            min = Integer.MAX_VALUE;
+        }else{
+            min = stack.peek().min;
+        }
     }
     
     public int top() {
-        return stack1.peek();
+        return stack.peek().val;
     }
     
     public int getMin() {
-        return min;
+        return stack.peek().min;
+    }
+}
+
+class Element{
+    int val;
+    int min;
+
+    public Element(int val, int min){
+        this.min = min;
+        this.val = val;
+    }
+}
+
+class MinStack2 {
+
+    private Stack<Integer> data;
+    private Stack<Integer> helper;
+
+    /** initialize your data structure here. */
+    public MinStack2() {
+        data = new Stack<>();
+        helper = new Stack<>();
+    }
+    
+    public void push(int x) {
+        data.push(x);
+        if(helper.isEmpty() || helper.peek() > x){
+            helper.push(x);
+        }else{
+            helper.push(helper.peek());
+        }
+    }
+    
+    public void pop() {
+        if(!data.isEmpty()){
+            data.pop();
+            helper.pop();
+        }
+    }
+    
+    public int top() {
+        if(!data.isEmpty())
+            return data.peek();
+        throw new RuntimeException("栈中元素为空，此操作非法");
+    }
+    
+    public int getMin() {
+        if(!data.isEmpty())
+            return helper.peek();
+        throw new RuntimeException("栈中元素为空，此操作非法");
     }
 }
 
