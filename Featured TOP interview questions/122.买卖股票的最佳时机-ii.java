@@ -45,7 +45,53 @@
  * 
  */
 class Solution {
-    public int maxProfit(int[] prices) {
+
+    /**
+     * 动态规划
+     * 
+     * 状态转移方程：
+     *      dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
+     *      dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
+     * 
+     * 边界条件：
+     *      dp[-1][k][0] = 0：-1天未持有股票，因此为0
+     *      dp[-1][k][1] = -ini：-1天持有股票，不可能存在的情况，用负无穷代替
+     *      dp[i][0][0] = 0：没有交易过，则利润为0
+     *      dp[i][0][1] = -ini：没有交易过却持有股票，不可能存在的情况，用负无穷代替
+     * 
+     * 说明：
+     *      i代表天数，k代表最多交易的次数，0表示未持有股票，1表示持有股票
+     *      这里k = ini，即能买入和卖出股票任意次，因此，状态转移方程可以转化为如下形式
+     * 
+     * 转化后的状态转移方程：
+     *      dp[i][ini][0] = max(dp[i-1][ini][0], dp[i-1][ini][1] + prices[i])
+     *      dp[i][ini][1] = max(dp[i-1][ini][1], dp[i-1][ini-1][0] - prices[i])
+     * 
+     * 这里dp[i][ini][0] = dp[i][ini-1][0] 恒成立，这里k已经不再影响整个方程了
+     * 
+     * 转化后的状态转移方程：
+     *      dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+     *      dp[i][1] = max(dp[i-1][1], dp[i-1][0]- prices[i])
+     * 
+     * 
+     * 
+     * 
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices){
+        if(prices.length == 0) return 0;
+        int len = prices.length;
+        int dp_i0 = 0;
+        int dp_i1 = -prices[0];
+        for(int i = 1; i<len; i++){
+            dp_i0 = Math.max(dp_i0, dp_i1+prices[i]);
+            dp_i1 = Math.max(dp_i1, dp_i0-prices[i]);
+        }
+        return dp_i0;
+    }
+
+    public int maxProfit0(int[] prices) {
         int res = 0;
         for(int i = 1; i<prices.length; i++){
             if(prices[i] > prices[i-1]){
